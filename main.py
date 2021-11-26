@@ -1,4 +1,7 @@
 import random
+import matplotlib.pyplot as plt
+from matplotlib import colors
+import numpy as np
 
 
 class Node:
@@ -40,7 +43,7 @@ trees = []
     
     
 def build_trees(rows, cols):
-    for j in range(0, len(values[0])):
+    for j in range(cols):
         cell_value = values[0][j]
         if cell_value == 1:
             trees.append(Node(0, j, 1))
@@ -50,22 +53,20 @@ def build_trees(rows, cols):
         right_index = (node.row, node.col + 1)
         bottom_index = (node.row + 1, node.col)
 
-        # print(node, "L: ", left_index, "R: ", right_index, "B: ", bottom_index)
+        if node.content is not 1:
+            print(node, "L: ", left_index, "R: ", right_index, "B: ", bottom_index)
 
-        if node.left_child is None and left_index[0] >= 0:
-            if values[left_index[0]][left_index[1]] == 1:
-                node.left_child = Node(left_index[0], left_index[1], 1)
-                node.left_child.right_child = node
-                bt(node.left_child, depth)
-        if node.right_child is None and right_index[1] < cols:
-            if values[right_index[0]][right_index[1]] == 1:
-                node.right_child = Node(right_index[0], right_index[1], 1)
-                node.right_child.left_child = node
-                bt(node.right_child, depth)
-        if bottom_index[0] < rows:
-            if values[bottom_index[0]][bottom_index[1]] == 1:
-                node.bottom_child = Node(bottom_index[0], bottom_index[1], 1)
-                bt(node.bottom_child, depth + 1)
+        if left_index[0] >= 0 and values[left_index[0]][left_index[1]] == 1 and node.left_child is None:
+            node.left_child = Node(left_index[0], left_index[1], 1)
+            node.left_child.right_child = node
+            bt(node.left_child, depth)
+        if right_index[1] < cols and values[right_index[0]][right_index[1]] == 1 and node.right_child is None:
+            node.right_child = Node(right_index[0], right_index[1], 1)
+            node.right_child.left_child = node
+            bt(node.right_child, depth)
+        if bottom_index[0] < rows and values[bottom_index[0]][bottom_index[1]] == 1:
+            node.bottom_child = Node(bottom_index[0], bottom_index[1], 1)
+            bt(node.bottom_child, depth + 1)
     
     print("Created", len(trees), "trees")
     for tree in trees:
@@ -75,7 +76,7 @@ def build_trees(rows, cols):
 def pour_water():
 
     def traverse(node: Node):
-        values[node.row][node.col] = 'W'
+        values[node.row][node.col] = 2
         node.visited = True
         if node.left_child is not None and not node.left_child.visited:
             traverse(node.left_child)
@@ -91,8 +92,39 @@ def pour_water():
 rows = 10
 cols = 10
 build_table(rows, cols, percolation_value = 0.5)
+
+# problematic values
+values = [
+    [1,0,0,1,1,1,1,1,1,1],
+    [1,0,1,1,0,0,1,0,0,0],
+    [1,0,1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,1,1,1,0,0],
+    [1,1,0,0,0,1,1,0,0,1],
+    [1,0,0,1,0,1,0,1,1,1],
+    [0,1,0,1,1,0,0,0,1,0],
+    [0,1,0,0,1,1,0,1,1,1],
+    [1,1,0,1,0,1,0,1,1,0],
+    [0,1,0,0,1,1,1,1,1,1]
+]
+
+
 render_table()
 build_trees(rows, cols)
 pour_water()
 render_table()
+
+
+#data = np.random.randint(3, size = (10, 10))
+
+cmap = colors.ListedColormap(['white', 'grey', 'green'])
+
+fig, ax = plt.subplots()
+ax.imshow(values, cmap=cmap)
+
+# draw gridlines
+ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=1)
+ax.set_xticks(np.arange(-.5, 10, 1))
+ax.set_yticks(np.arange(-.5, 10, 1))
+
+plt.show()
             

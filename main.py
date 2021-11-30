@@ -53,10 +53,7 @@ def build_trees(rows, cols):
         right_index = (node.row, node.col + 1)
         bottom_index = (node.row + 1, node.col)
 
-        if node.content is not 1:
-            print(node, "L: ", left_index, "R: ", right_index, "B: ", bottom_index)
-
-        if left_index[0] >= 0 and values[left_index[0]][left_index[1]] == 1 and node.left_child is None:
+        if left_index[1] >= 0 and values[left_index[0]][left_index[1]] == 1 and node.left_child is None:
             node.left_child = Node(left_index[0], left_index[1], 1)
             node.left_child.right_child = node
             bt(node.left_child, depth)

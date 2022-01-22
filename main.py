@@ -139,8 +139,6 @@ trees = build_trees(values)
 path = pour_water(trees, values)
 render_table(values)
 
-#data = np.random.randint(3, size = (10, 10))
-
 cmap = colors.ListedColormap(['white', 'grey', 'green'])
 
 fig, ax = plt.subplots()
@@ -150,6 +148,8 @@ ax.imshow(values, cmap=cmap)
 ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=1)
 ax.set_xticks(np.arange(-.5, 10, 1))
 ax.set_yticks(np.arange(-.5, 10, 1))
+ax.set_xticklabels([])
+ax.set_yticklabels([])
 
 plt.show()
             
